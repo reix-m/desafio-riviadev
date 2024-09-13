@@ -26,6 +26,14 @@ cd desafio-riviadev/read-csv-file
 Adicionar um arquivo input-data.csv na pasta raiz do projeto
 ou utilizar o exemplo fornecido
 
+## Instalar dependências
+
+```bash
+npm install
+# ou
+yarn
+```
+
 ## Executar projeto
 
 ### Usando NPM
