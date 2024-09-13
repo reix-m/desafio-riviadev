@@ -1,2 +1,4 @@
 node_modules
 data.csv
+.DS_Store
+output-data.json
