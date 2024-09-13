@@ -43,3 +43,22 @@ yarn start
 ## Saída
 
 O arquivo output-data.json será criado ou atualizado no diretório atual
+
+## Testes
+
+### Para rodar os testes unitários
+
+```bash
+npm run test
+# ou
+yarn test
+
+```
+
+### Para rodar os testes com cobertura de código
+
+```bash
+npm run test:cov
+# ou
+yarn test:cov
+```
