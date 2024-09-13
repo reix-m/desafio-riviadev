@@ -1,0 +1,14 @@
+{
+  "name": "consume-api-and-write-on-json",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "jest",
+    "test:cov": "jest --coverage"
+  },
+  "keywords": [],
+  "author": "Maycon Reis <maycon.r.dejesus@gmail.com>",
+  "license": "ISC"
+}
