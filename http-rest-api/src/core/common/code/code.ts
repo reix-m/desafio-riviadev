@@ -9,6 +9,11 @@ export class Code {
     message: 'Success.',
   };
 
+  public static CREATED: CodeDescription = {
+    code: 201,
+    message: 'Created.',
+  };
+
   public static BAD_REQUEST_ERROR: CodeDescription = {
     code: 400,
     message: 'Bad request.',
@@ -32,5 +37,10 @@ export class Code {
   public static ENTITY_ALREADY_EXISTS_ERROR: CodeDescription = {
     code: 1002,
     message: 'Entity already exists error.',
+  };
+
+  public static USE_CASE_PORT_VALIDATION_ERROR: CodeDescription = {
+    code: 1003,
+    message: 'Use case port validation error.',
   };
 }
