@@ -1,4 +1,5 @@
 import { RepositoryFindOptions } from '@core/common/persistence/repository-options';
+import { Nullable } from '@core/common/type/common-types';
 import { User } from '@core/domain/user/entity/user';
 import { UserRepositoryPort } from '@core/domain/user/port/persistence/user-repository-port';
 import { TypeOrmUserMapper } from '@infrastructure/adapter/persistence/typeorm/entity/user/mapper/typeorm-user-mapper';
@@ -37,6 +38,30 @@ export class TypeOrmUserRepositoryAdapter extends Repository<TypeOrmUser> implem
 
     return query.getCount();
   }
+
+  public async findUser(
+    by: { id?: string; email?: string },
+    options: RepositoryFindOptions = {}
+  ): Promise<Nullable<User>> {
+    let domainEntity: Nullable<User> = null;
+
+    const query: SelectQueryBuilder<TypeOrmUser> = this.buildUserQueryBuilder();
+
+    this.extendQueryWithByProperties(query, by);
+
+    if (!options?.includeRemoved) {
+      query.andWhere(this.excludeRemovedUserClause);
+    }
+
+    const ormEntity: Nullable<TypeOrmUser> = await query.getOne();
+
+    if (ormEntity) {
+      domainEntity = TypeOrmUserMapper.toDomainEntity(ormEntity);
+    }
+
+    return domainEntity;
+  }
+
   private extendQueryWithByProperties(
     query: SelectQueryBuilder<TypeOrmUser>,
     by?: { id?: string; email?: string }
