@@ -1,0 +1,12 @@
+services:
+  mongodb:
+    image: mongo
+    env_file:
+      - env/local.mongo.env
+    ports:
+      - "27017:27017"
+    volumes:
+      - db:/data/db
+
+volumes:
+  db:
