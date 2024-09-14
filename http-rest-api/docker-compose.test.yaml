@@ -1,0 +1,18 @@
+services:
+  riviadev_http_api_postgresql_test:
+    build: docker/postgres/.
+    env_file:
+      - env/test.pg.env
+    ports:
+      - '5455:5432'
+    networks:
+      - riviadev_http_api_network_test
+    volumes:
+      - riviadev_http_api_pg_data_test:/var/lib/postgresql/data
+
+volumes:
+  riviadev_http_api_pg_data_test:
+
+networks:
+  riviadev_http_api_network_test:
+    driver: bridge
