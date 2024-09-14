@@ -1,0 +1,13 @@
+{
+  "cep": "01452001",
+  "state": "SP",
+  "city": "São Paulo",
+  "neighborhood": "Jardim Paulistano",
+  "street": "Avenida Brigadeiro Faria Lima",
+  "service": "open-cep",
+  "location": {
+    "type": "Point",
+    "coordinates": {}
+  }
+}
+

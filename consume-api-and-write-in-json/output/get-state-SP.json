@@ -1,0 +1,11 @@
+{
+  "id": 35,
+  "sigla": "SP",
+  "nome": "São Paulo",
+  "regiao": {
+    "id": 3,
+    "sigla": "SE",
+    "nome": "Sudeste"
+  }
+}
+
