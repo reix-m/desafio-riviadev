@@ -3,3 +3,4 @@ data.csv
 .DS_Store
 output-data.json
 coverage
+dist
