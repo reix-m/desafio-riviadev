@@ -18,10 +18,12 @@
   "dependencies": {
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "env-var": "^7.5.0",
     "module-alias": "^2.2.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.10.0",
+    "@golevelup/ts-jest": "^0.5.5",
     "@types/jest": "^29.5.13",
     "@types/node": "^22.5.5",
     "dotenv": "^16.4.5",
