@@ -13,4 +13,9 @@ export class Code {
     code: 1000,
     message: 'Entity object validation error.',
   };
+
+  public static VALUE_OBJECT_VALIDATION_ERROR: CodeDescription = {
+    code: 1001,
+    message: 'Value object validation error.',
+  };
 }
