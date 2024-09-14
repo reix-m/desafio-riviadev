@@ -4,9 +4,19 @@ export type CodeDescription = {
 };
 
 export class Code {
+  public static SUCCESS: CodeDescription = {
+    code: 200,
+    message: 'Success.',
+  };
+
   public static BAD_REQUEST_ERROR: CodeDescription = {
     code: 400,
     message: 'Bad request.',
+  };
+
+  public static INTERNAL_ERROR: CodeDescription = {
+    code: 500,
+    message: 'Internal error.',
   };
 
   public static ENTITY_VALIDATION_ERROR: CodeDescription = {
