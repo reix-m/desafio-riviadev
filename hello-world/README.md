@@ -4,8 +4,6 @@ Criar uma função "Hello World" que executa em container
 
 ## Pré-requisitos
 
-- [Node.js](https://nodejs.org/) (versão 18.20.2)
-- [NPM](https://www.npmjs.com/) ou [Yarn](https://yarnpkg.com/)
 - [Docker](https://www.docker.com/)
 
 ## Instalação
