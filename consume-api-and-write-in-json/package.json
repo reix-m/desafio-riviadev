@@ -10,5 +10,9 @@
   },
   "keywords": [],
   "author": "Maycon Reis <maycon.r.dejesus@gmail.com>",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nock": "^13.5.5"
+  }
 }
