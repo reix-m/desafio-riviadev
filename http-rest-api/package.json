@@ -4,8 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test": "jest",
+    "test:cov": "jest --coverage",
     "lint": "eslint '{src,test}/**/*.ts'",
     "lint:fix": "eslint --fix '{src,test}/**/*.ts'"
+  },
+  "engines": {
+    "node": ">=18"
   },
   "keywords": [],
   "author": "Maycon Reis <maycon.r.dejesus@gmail.com>",
@@ -15,10 +20,16 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.10.0",
+    "@types/jest": "^29.5.13",
+    "@types/node": "^22.5.5",
+    "dotenv": "^16.4.5",
     "eslint": "^9.10.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "globals": "^15.9.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
     "typescript": "^5.6.2",
     "typescript-eslint": "^8.5.0"
   }
