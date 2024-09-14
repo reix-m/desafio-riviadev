@@ -7,7 +7,7 @@
     "build": "./scripts/build.sh",
     "copy:local-env": "cp ./env/local.app.env ./dist/.env",
     "start": "node ./dist/main.js",
-    "start:local": "npm run copy:local-env && cd ./dist && node --env-file=.env main.js",
+    "start:local": "npm run copy:local-env && cd ./dist && node -r dotenv/config main.js",
     "test": "jest",
     "test:cov": "jest --coverage",
     "lint": "eslint '{src,test}/**/*.ts'",
