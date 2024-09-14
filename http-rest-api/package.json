@@ -16,6 +16,7 @@
   "author": "Maycon Reis <maycon.r.dejesus@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "class-validator": "^0.14.1",
     "module-alias": "^2.2.3"
   },
   "devDependencies": {
