@@ -18,4 +18,9 @@ export class Code {
     code: 1001,
     message: 'Value object validation error.',
   };
+
+  public static ENTITY_ALREADY_EXISTS_ERROR: CodeDescription = {
+    code: 1002,
+    message: 'Entity already exists error.',
+  };
 }
