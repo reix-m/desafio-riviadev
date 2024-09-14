@@ -19,6 +19,11 @@ export class Code {
     message: 'Bad request.',
   };
 
+  public static UNAUTHORIZED_ERROR: CodeDescription = {
+    code: 401,
+    message: 'Unauthorized error.',
+  };
+
   public static INTERNAL_ERROR: CodeDescription = {
     code: 500,
     message: 'Internal error.',

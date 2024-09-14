@@ -1,9 +1,27 @@
+import { NestHttpExceptionFilter } from '@application/api/http-rest/exception-filter/nest-http-exception-filter';
+import { NestHttpLogginInterceptor } from '@application/api/http-rest/interceptor/nest-http-loggin-interceptor';
 import { TypeOrmDirectory } from '@infrastructure/adapter/persistence/typeorm/typeorm-directory';
+import { ApiServerConfig } from '@infrastructure/config/api-server-config';
 import { DatabaseConfig } from '@infrastructure/config/database-config';
-import { Global, Module } from '@nestjs/common';
+import { Global, Module, Provider } from '@nestjs/common';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { addTransactionalDataSource } from 'typeorm-transactional';
+
+const providers: Provider[] = [
+  {
+    provide: APP_FILTER,
+    useClass: NestHttpExceptionFilter,
+  },
+];
+
+if (ApiServerConfig.LogEnable) {
+  providers.push({
+    provide: APP_INTERCEPTOR,
+    useClass: NestHttpLogginInterceptor,
+  });
+}
 
 @Global()
 @Module({
@@ -30,5 +48,6 @@ import { addTransactionalDataSource } from 'typeorm-transactional';
       },
     }),
   ],
+  providers,
 })
 export class InfrastructureModule {}
