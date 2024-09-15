@@ -12,8 +12,23 @@ services:
     volumes:
       - riviadev_http_api_pg_data_test:/var/lib/postgresql/data
 
+  miniotest:
+    image: quay.io/minio/minio
+    entrypoint: sh
+    command: -c 'mkdir -p /export/images && minio server /export --console-address=":9001"'
+    env_file:
+      - env/test.minio.env
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    networks:
+      - riviadev_http_api_network_test
+    volumes:
+      - minio_data_test:/data
+
 volumes:
   riviadev_http_api_pg_data_test:
+  minio_data_test:
 
 networks:
   riviadev_http_api_network_test:
