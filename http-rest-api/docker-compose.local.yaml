@@ -1,6 +1,8 @@
 services:
   riviadev_http_api_postgresql_local:
-    build: docker/postgres/.
+    build:
+      context: .
+      dockerfile: docker/postgres/Dockerfile
     env_file:
       - env/local.pg.env
     ports:
@@ -20,11 +22,9 @@ services:
       DB_HOST: 'riviadev_http_api_postgresql_local'
       DB_PORT: '5432'
     ports:
-      - '3001:3001'
+      - '3000:3000'
     networks:
       - riviadev_http_api_network_local
-    volumes:
-      - .:/usr/app
 
 volumes:
   riviadev_http_api_pg_data_local:
