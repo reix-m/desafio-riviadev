@@ -6,7 +6,7 @@ import { randomUUID } from 'crypto';
 
 describe('Password', () => {
   describe('new', () => {
-    test('should not create Password instance when data is valid', async () => {
+    test('should not create Password instance when data is not valid', async () => {
       const invalidPassword: string = '1234567';
       try {
         await Password.new(invalidPassword);

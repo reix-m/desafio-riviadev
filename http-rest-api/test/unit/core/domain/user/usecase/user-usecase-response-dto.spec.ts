@@ -6,7 +6,7 @@ import { randomUUID } from 'crypto';
 
 describe('UserUseCaseResponseDto', () => {
   describe('newFromUser', () => {
-    test('should creates UserUseCaseDto instance with required parameters', async () => {
+    test('should creates UserUseCaseResponseDto instance with required parameters', async () => {
       const user: User = await createUser();
       const userUseCaseDto: UserUseCaseResponseDto = UserUseCaseResponseDto.newFromUser(user);
 
