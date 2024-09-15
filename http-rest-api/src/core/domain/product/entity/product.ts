@@ -11,7 +11,7 @@ import { randomUUID } from 'crypto';
 
 export class Product extends Entity<string> implements RemovableEntity {
   @IsInstance(ProductOwner)
-  private _owner: ProductOwner;
+  private readonly _owner: ProductOwner;
 
   @IsString()
   private _name: string;
@@ -30,7 +30,7 @@ export class Product extends Entity<string> implements RemovableEntity {
   private _image: Nullable<ProductImage>;
 
   @IsDate()
-  private _createdAt: Date;
+  private readonly _createdAt: Date;
 
   @IsOptional()
   @IsDate()
