@@ -16,4 +16,26 @@ describe('CoreAssert', () => {
       }
     });
   });
+
+  describe('notEmpty', () => {
+    test('should not throw error when expression is not <null|undefined>', () => {
+      expect(CoreAssert.notEmpty({}, assertionError)).toEqual({});
+    });
+
+    test('should throw error when expression is null', () => {
+      try {
+        CoreAssert.notEmpty(null, assertionError);
+      } catch (error) {
+        expect(error).toEqual(assertionError);
+      }
+    });
+
+    test('should throw error when expression is undefined', () => {
+      try {
+        CoreAssert.notEmpty(undefined, assertionError);
+      } catch (error) {
+        expect(error).toEqual(assertionError);
+      }
+    });
+  });
 });
