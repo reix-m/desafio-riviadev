@@ -1,6 +1,8 @@
 services:
   riviadev_http_api_postgresql_test:
-    build: docker/postgres/.
+    build:
+      context: .
+      dockerfile: docker/postgres/Dockerfile
     env_file:
       - env/test.pg.env
     ports:
