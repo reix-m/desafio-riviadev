@@ -27,9 +27,20 @@ export class NestHttpExceptionFilter implements ExceptionFilter {
     statusCode = this.handleHttpErrorStatusCode(error, statusCode);
 
     if (ApiServerConfig.LogEnable) {
-      const message: string =
-        `Method: ${request.method}; ` + `Path: ${request.path}; ` + `Error: ${errorResponse.message}`;
-      Logger.error(message);
+      const message: Record<string, unknown> = {
+        message: errorResponse.message,
+        code: errorResponse.code,
+        content: {
+          method: request.method,
+          hostname: request.hostname,
+          originalUrl: request.originalUrl,
+          route: request.baseUrl,
+          query: request.query,
+          params: request.params,
+          body: request.body,
+        },
+      };
+      Logger.error(message, error?.stack);
     }
 
     response.status(statusCode).json(errorResponse);
