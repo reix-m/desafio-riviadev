@@ -11,7 +11,9 @@
     "test": "jest",
     "test:cov": "jest --coverage",
     "lint": "eslint '{src,test}/**/*.ts'",
-    "lint:fix": "eslint --fix '{src,test}/**/*.ts'"
+    "lint:fix": "eslint --fix '{src,test}/**/*.ts'",
+    "migration:create": "node ./node_modules/typeorm/cli.js migration:create",
+    "migration:revert": "node ./node_modules/typeorm/cli.js migration:revert"
   },
   "engines": {
     "node": ">=18"
