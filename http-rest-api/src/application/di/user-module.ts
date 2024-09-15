@@ -1,3 +1,4 @@
+import { UserController } from '@application/api/http-rest/controller/user-controller';
 import { UserDITokens } from '@core/domain/user/di/user-di-tokens';
 import { UserRepositoryPort } from '@core/domain/user/port/persistence/user-repository-port';
 import { SignUpService } from '@core/features/user/sign-up/sign-up-service';
@@ -18,11 +19,12 @@ const useCaseProviders: Provider[] = [
   {
     provide: UserDITokens.SignUpUseCase,
     useFactory: (userRepository: UserRepositoryPort) => new SignUpService(userRepository),
-    inject: [UserDITokens],
+    inject: [UserDITokens.UserRepository],
   },
 ];
 
 @Module({
+  controllers: [UserController],
   providers: [...persistenceProviders, ...useCaseProviders],
   exports: [UserDITokens.UserRepository],
 })
