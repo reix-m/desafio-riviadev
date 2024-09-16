@@ -166,7 +166,7 @@ describe('Product.Edit', () => {
       });
     });
 
-    test('should notnot edit product when request data is empty', async () => {
+    test('should not edit product when request data is empty', async () => {
       const executor: User = await userFixture.insertUser({
         email: `${randomUUID()}@email.com`,
         password: randomUUID(),

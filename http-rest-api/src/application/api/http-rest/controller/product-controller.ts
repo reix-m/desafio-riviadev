@@ -10,10 +10,14 @@ import { ProductDITokens } from '@core/domain/product/di/product-di-tokens';
 import { ProductUseCaseResponseDto } from '@core/domain/product/usecase/dto/product-usecase-response-dto';
 import { CreateProductUseCase } from '@core/features/product/create-product/usecase/create-product-usecase';
 import { EditProductUseCase } from '@core/features/product/edit-product/usecase/edit-product-usecase';
+import { GetProductUseCase } from '@core/features/product/get-product/usecase/get-product-usecase';
+import { RemoveProductUseCase } from '@core/features/product/remove-product/usecase/remove-product-usecase';
 import { CreateProductAdapter } from '@infrastructure/adapter/usecase/product/create-product-adapter';
 import { EditProductAdapter } from '@infrastructure/adapter/usecase/product/edit-product-adapter';
+import { GetProductAdapter } from '@infrastructure/adapter/usecase/product/get-product-adapter';
+import { RemoveProductAdapter } from '@infrastructure/adapter/usecase/product/remove-product-adapter';
 import { FileStorageConfig } from '@infrastructure/config/file-storage-config';
-import { Body, Controller, HttpCode, HttpStatus, Inject, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Inject, Param, Post, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { resolve } from 'url';
 
@@ -22,7 +26,9 @@ import { resolve } from 'url';
 export class ProductController {
   constructor(
     @Inject(ProductDITokens.CreateProductUseCase) private readonly createProductUseCase: CreateProductUseCase,
-    @Inject(ProductDITokens.EditProductUseCase) private readonly editProductUseCase: EditProductUseCase
+    @Inject(ProductDITokens.EditProductUseCase) private readonly editProductUseCase: EditProductUseCase,
+    @Inject(ProductDITokens.RemoveProductUseCase) private readonly removeProductUseCase: RemoveProductUseCase,
+    @Inject(ProductDITokens.GetProductUseCase) private readonly getProductUseCase: GetProductUseCase
   ) {}
 
   @Post()
@@ -75,6 +81,34 @@ export class ProductController {
     this.setFileStorageBasePath([editedProduct]);
 
     return CoreApiResponse.success(Code.SUCCESS.code, editedProduct);
+  }
+
+  @Delete(':productId')
+  @HttpAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth()
+  @ApiResponse({ status: HttpStatus.OK, type: HttpRestApiResponseProduct })
+  public async removePost(
+    @HttpUser() user: HttpUserPayload,
+    @Param('productId') productId: string
+  ): Promise<CoreApiResponse<void>> {
+    const adapter: RemoveProductAdapter = await RemoveProductAdapter.new({ executorId: user.id, productId: productId });
+    await this.removeProductUseCase.execute(adapter);
+
+    return CoreApiResponse.success();
+  }
+
+  @Get(':productId')
+  @HttpAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth()
+  @ApiResponse({ status: HttpStatus.OK, type: HttpRestApiResponseProduct })
+  public async getPost(@Param('productId') productId: string): Promise<CoreApiResponse<ProductUseCaseResponseDto>> {
+    const adapter: GetProductAdapter = await GetProductAdapter.new({ productId: productId });
+    const product: ProductUseCaseResponseDto = await this.getProductUseCase.execute(adapter);
+    this.setFileStorageBasePath([product]);
+
+    return CoreApiResponse.success(Code.SUCCESS.code, product);
   }
 
   private setFileStorageBasePath(products: ProductUseCaseResponseDto[]): void {
