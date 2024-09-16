@@ -24,6 +24,11 @@ export class Code {
     message: 'Unauthorized.',
   };
 
+  public static ACCESS_DENIED_ERROR: CodeDescription = {
+    code: 403,
+    message: 'Access denied.',
+  };
+
   public static INTERNAL_ERROR: CodeDescription = {
     code: 500,
     message: 'Internal error.',

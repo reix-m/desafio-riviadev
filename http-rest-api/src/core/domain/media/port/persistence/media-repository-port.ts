@@ -5,4 +5,5 @@ import { Media } from '@core/domain/media/entity/media';
 export type MediaRepositoryPort = {
   findMedia(by: { id?: string }, options?: RepositoryFindOptions): Promise<Nullable<Media>>;
   addMedia(media: Media): Promise<{ id: string }>;
+  updateMedia(media: Media): Promise<void>;
 };

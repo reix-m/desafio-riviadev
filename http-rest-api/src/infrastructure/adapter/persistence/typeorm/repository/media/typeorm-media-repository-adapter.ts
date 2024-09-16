@@ -49,6 +49,11 @@ export class TypeOrmMediaRepositoryAdapter extends Repository<TypeOrmMedia> impl
     };
   }
 
+  public async updateMedia(media: Media): Promise<void> {
+    const ormMedia: TypeOrmMedia = TypeOrmMediaMapper.toOrmEntity(media);
+    await this.update(ormMedia.id, ormMedia);
+  }
+
   private buildMediaQueryBuilder(): SelectQueryBuilder<TypeOrmMedia> {
     return this.createQueryBuilder(this.mediaAlias).select();
   }
