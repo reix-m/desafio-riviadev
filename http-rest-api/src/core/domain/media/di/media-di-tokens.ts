@@ -14,4 +14,7 @@ export class MediaDITokens {
   public static readonly MediaRepository: unique symbol = Symbol('MediaRepository');
 
   public static readonly MediaFileStorage: unique symbol = Symbol('MediaFileStorage');
+
+  // Handlers
+  public static readonly GetMediaPreviewQueryHandler: unique symbol = Symbol('GetMediaPreviewQueryHandler');
 }
