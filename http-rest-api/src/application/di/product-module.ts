@@ -7,6 +7,7 @@ import { CreateProductService } from '@core/features/product/create-product/crea
 import { CreateProductUseCase } from '@core/features/product/create-product/usecase/create-product-usecase';
 import { EditProductService } from '@core/features/product/edit-product/edit-product-service';
 import { EditProductUseCase } from '@core/features/product/edit-product/usecase/edit-product-usecase';
+import { RemoveProductService } from '@core/features/product/remove-product/remove-product-service';
 import { TypeOrmProductRepositoryAdapter } from '@infrastructure/adapter/persistence/typeorm/repository/product/typeorm-product-repository-adapter';
 import { TransactionalUseCaseWrapper } from '@infrastructure/transactional/transactional-usecase-wrapper';
 import { Module, Provider } from '@nestjs/common';
@@ -37,6 +38,11 @@ const useCaseProviders: Provider[] = [
       return new TransactionalUseCaseWrapper(service);
     },
     inject: [ProductDITokens.ProductRepository, CoreDITokens.QueryBus],
+  },
+  {
+    provide: ProductDITokens.RemoveProductUseCase,
+    useFactory: (productRepository: ProductRepositoryPort) => new RemoveProductService(productRepository),
+    inject: [ProductDITokens.ProductRepository],
   },
 ];
 

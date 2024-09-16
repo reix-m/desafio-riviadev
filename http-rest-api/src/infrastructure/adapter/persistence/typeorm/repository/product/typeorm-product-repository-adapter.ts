@@ -78,14 +78,14 @@ export class TypeOrmProductRepositoryAdapter extends Repository<TypeOrmProduct> 
     await this.update(ormProduct.id, ormProduct);
   }
 
-  public async removeProduct(product: Product, options: RepositoryRemoveOptions): Promise<void> {
+  public async removeProduct(product: Product, options?: RepositoryRemoveOptions): Promise<void> {
     await product.remove();
     const ormProduct: TypeOrmProduct = TypeOrmProductMapper.toOrmEntity(product);
 
     if (options?.disableSoftDeleting) {
       await this.delete(ormProduct);
     }
-    if (!options.disableSoftDeleting) {
+    if (!options?.disableSoftDeleting) {
       await this.update(ormProduct.id, ormProduct);
     }
   }

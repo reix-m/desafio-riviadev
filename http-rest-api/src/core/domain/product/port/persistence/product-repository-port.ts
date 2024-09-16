@@ -11,5 +11,5 @@ export type ProductRepositoryPort = {
   ): Promise<Product[]>;
   addProduct(product: Product): Promise<{ id: string }>;
   updateProduct(product: Product): Promise<void>;
-  removeProduct(product: Product, options: RepositoryRemoveOptions): Promise<void>;
+  removeProduct(product: Product, options?: RepositoryRemoveOptions): Promise<void>;
 };
