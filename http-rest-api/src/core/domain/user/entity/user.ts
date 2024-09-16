@@ -38,6 +38,10 @@ export class User extends Entity<string> implements RemovableEntity {
     return this._lastName;
   }
 
+  public getName(): string {
+    return `${this._firstName} ${this._lastName}`;
+  }
+
   public getEmail(): string {
     return this._email;
   }

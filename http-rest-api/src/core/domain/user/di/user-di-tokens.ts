@@ -4,4 +4,7 @@ export class UserDITokens {
 
   // Repositories
   public static readonly UserRepository: unique symbol = Symbol('UserRepository');
+
+  // Handlers
+  public static readonly GetUserPreviewQueryHandler: unique symbol = Symbol('GetUserPreviewQueryHandler');
 }
