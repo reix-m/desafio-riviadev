@@ -1,7 +1,7 @@
 import { Code } from '@core/common/code/code';
 import { Exception } from '@core/common/exception/exception';
 import { QueryBusPort } from '@core/common/port/message/query-bus-port';
-import { Nullable } from '@core/common/type/common-types';
+import { Nullable, Optional } from '@core/common/type/common-types';
 import { CoreAssert } from '@core/common/util/assert/core-assert';
 import { Product } from '@core/domain/product/entity/product';
 import { ProductImage } from '@core/domain/product/entity/product-image';
@@ -33,7 +33,7 @@ export class EditProductService implements EditProductUseCase {
       image: await this.defineNewImage(payload, product),
       description: payload.description,
       category: payload.category,
-      quantity: payload?.quantity ? await Quantity.new(payload.quantity) : undefined,
+      quantity: payload.quantity ? await Quantity.new(payload.quantity) : undefined,
     });
 
     await this.productRepository.updateProduct(product);
@@ -41,8 +41,8 @@ export class EditProductService implements EditProductUseCase {
     return ProductUseCaseResponseDto.newFromProduct(product);
   }
 
-  private async defineNewImage(payload: EditProductPort, product: Product): Promise<Nullable<ProductImage>> {
-    let newProductImage: Nullable<ProductImage> = null;
+  private async defineNewImage(payload: EditProductPort, product: Product): Promise<Optional<Nullable<ProductImage>>> {
+    let newProductImage: Optional<Nullable<ProductImage>> = undefined;
 
     const needUpdateImage: boolean = !!(payload.imageId && payload.imageId !== product.getImage()?.getId());
     const needResetImage: boolean = payload.imageId === null;

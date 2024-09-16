@@ -115,7 +115,7 @@ export class Product extends Entity<string> implements RemovableEntity {
       this._updatedAt = currentDate;
     }
 
-    if (typeof payload?.quantity !== 'undefined') {
+    if (payload?.quantity) {
       this._quantity = payload.quantity;
       this._updatedAt = currentDate;
     }
