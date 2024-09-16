@@ -16,14 +16,17 @@ import { CreateMediaUseCase } from '@core/features/media/create-media/usecase/cr
 import { EditMediaUseCase } from '@core/features/media/edit-media/usecase/edit-media-usecase';
 import { GetMediaListUseCase } from '@core/features/media/get-media-list/usecase/get-media-list-usecase';
 import { GetMediaUseCase } from '@core/features/media/get-media/usecase/get-media-usecase';
+import { RemoveMediaUseCase } from '@core/features/media/remove-media/usecase/remove-media-usecase';
 import { CreateMediaAdapter } from '@infrastructure/adapter/usecase/media/create-media-adapter';
 import { EditMediaAdapter } from '@infrastructure/adapter/usecase/media/edit-media-adapter';
 import { GetMediaAdapter } from '@infrastructure/adapter/usecase/media/get-media-adapter';
 import { GetMediaListAdapter } from '@infrastructure/adapter/usecase/media/get-media-list-adapter';
+import { RemoveMediaAdapter } from '@infrastructure/adapter/usecase/media/remove-media-adapter';
 import { FileStorageConfig } from '@infrastructure/config/file-storage-config';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -50,7 +53,8 @@ export class MediaController {
     @Inject(MediaDITokens.CreateMediaUseCase) private readonly createMediaUseCase: CreateMediaUseCase,
     @Inject(MediaDITokens.GetMediaUseCase) private readonly getMediaUseCase: GetMediaUseCase,
     @Inject(MediaDITokens.EditMediaUseCase) private readonly editMediaUseCase: EditMediaUseCase,
-    @Inject(MediaDITokens.GetMediaListUseCase) private readonly getMediaListUseCase: GetMediaListUseCase
+    @Inject(MediaDITokens.GetMediaListUseCase) private readonly getMediaListUseCase: GetMediaListUseCase,
+    @Inject(MediaDITokens.RemoveMediaUseCase) private readonly removeMediaUseCase: RemoveMediaUseCase
   ) {}
 
   @Post()
@@ -142,5 +146,24 @@ export class MediaController {
     this.setFileStorageBasePath(medias);
 
     return CoreApiResponse.success(Code.SUCCESS.code, medias);
+  }
+
+  @Delete(':mediaId')
+  @HttpAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth()
+  @ApiResponse({ status: HttpStatus.OK, type: HttpRestApiResponseMedia })
+  public async removeMedia(
+    @HttpUser() user: HttpUserPayload,
+    @Param('mediaId') mediaId: string
+  ): Promise<CoreApiResponse<void>> {
+    const adapter: RemoveMediaAdapter = await RemoveMediaAdapter.new({
+      executorId: user.id,
+      mediaId: mediaId,
+    });
+
+    await this.removeMediaUseCase.execute(adapter);
+
+    return CoreApiResponse.success();
   }
 }
