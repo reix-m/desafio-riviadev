@@ -3,3 +3,7 @@ export type RepositoryFindOptions = {
   limit?: number;
   offset?: number;
 };
+
+export type RepositoryRemoveOptions = {
+  disableSoftDeleting?: boolean;
+};

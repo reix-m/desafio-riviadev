@@ -1,4 +1,4 @@
-import { RepositoryFindOptions } from '@core/common/persistence/repository-options';
+import { RepositoryFindOptions, RepositoryRemoveOptions } from '@core/common/persistence/repository-options';
 import { Nullable } from '@core/common/type/common-types';
 import { Media } from '@core/domain/media/entity/media';
 import { MediaRepositoryPort } from '@core/domain/media/port/persistence/media-repository-port';
@@ -73,6 +73,19 @@ export class TypeOrmMediaRepositoryAdapter extends Repository<TypeOrmMedia> impl
     const domainMedias: Media[] = TypeOrmMediaMapper.toDomainEntities(ormMedias);
 
     return domainMedias;
+  }
+
+  public async removeMedia(media: Media, options: RepositoryRemoveOptions = {}): Promise<void> {
+    await media.remove();
+    const ormMedia: TypeOrmMedia = TypeOrmMediaMapper.toOrmEntity(media);
+
+    if (options?.disableSoftDeleting) {
+      await this.delete(ormMedia);
+    }
+
+    if (!options.disableSoftDeleting) {
+      await this.update(ormMedia.id, ormMedia);
+    }
   }
 
   private buildMediaQueryBuilder(): SelectQueryBuilder<TypeOrmMedia> {

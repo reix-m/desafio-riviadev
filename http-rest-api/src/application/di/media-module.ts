@@ -1,4 +1,6 @@
 import { MediaController } from '@application/api/http-rest/controller/media-controller';
+import { CoreDITokens } from '@core/common/di/core-di-tokens';
+import { EventBusPort } from '@core/common/port/message/event-bus-port';
 import { MediaDITokens } from '@core/domain/media/di/media-di-tokens';
 import { MediaFileStoragePort } from '@core/domain/media/port/persistence/media-file-storage-port';
 import { MediaRepositoryPort } from '@core/domain/media/port/persistence/media-repository-port';
@@ -7,6 +9,8 @@ import { CreateMediaUseCase } from '@core/features/media/create-media/usecase/cr
 import { EditMediaService } from '@core/features/media/edit-media/edit-media-service';
 import { GetMediaListService } from '@core/features/media/get-media-list/get-media-list-service';
 import { GetMediaService } from '@core/features/media/get-media/get-media-service';
+import { RemoveMediaService } from '@core/features/media/remove-media/remove-media-service';
+import { RemoveMediaUseCase } from '@core/features/media/remove-media/usecase/remove-media-usecase';
 import { MinioMediaFileStorageAdapter } from '@infrastructure/adapter/persistence/media-file/minion-media-file-storage-adapter';
 import { TypeOrmMediaRepositoryAdapter } from '@infrastructure/adapter/persistence/typeorm/repository/media/typeorm-media-repository-adapter';
 import { TransactionalUseCaseWrapper } from '@infrastructure/transactional/transactional-usecase-wrapper';
@@ -49,6 +53,14 @@ const useCaseProviders: Provider[] = [
     provide: MediaDITokens.GetMediaListUseCase,
     useFactory: (mediaRepository: MediaRepositoryPort) => new GetMediaListService(mediaRepository),
     inject: [MediaDITokens.MediaRepository],
+  },
+  {
+    provide: MediaDITokens.RemoveMediaUseCase,
+    useFactory: (mediaRepository: MediaRepositoryPort, eventBus: EventBusPort) => {
+      const service: RemoveMediaUseCase = new RemoveMediaService(mediaRepository, eventBus);
+      return new TransactionalUseCaseWrapper(service);
+    },
+    inject: [MediaDITokens.MediaRepository, CoreDITokens.EventBus],
   },
 ];
 
