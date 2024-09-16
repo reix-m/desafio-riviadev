@@ -109,4 +109,48 @@ describe('Product', () => {
       jest.useRealTimers();
     });
   });
+
+  describe('edit', () => {
+    test('should not edit Product when input args are empty', async () => {
+      const product: Product = await Product.new({
+        owner: await ProductOwner.new(randomUUID(), randomUUID()),
+        name: 'Product name',
+        description: 'Product description',
+        category: ProductCategory.House,
+        quantity: await Quantity.new(10),
+      });
+
+      await product.edit({});
+
+      expect(product.getName()).toBe('Product name');
+      expect(product.getDescription()).toBe('Product description');
+      expect(product.getCategory()).toBe(ProductCategory.House);
+      expect(product.getQuantity().getValue()).toBe(10);
+      expect(product.getImage()).toBeNull();
+      expect(product.getUpdatedAt()).toBeNull();
+    });
+
+    test('should edit Product when input args are set', async () => {
+      jest.useFakeTimers();
+
+      const currentDate: number = Date.now();
+
+      const product: Product = await Product.new({
+        owner: await ProductOwner.new(randomUUID(), randomUUID()),
+        name: 'Product name',
+        description: 'Product description',
+        category: ProductCategory.House,
+        quantity: await Quantity.new(10),
+      });
+
+      const newProductImage: ProductImage = await ProductImage.new(randomUUID(), '/new/relative/path');
+      await product.edit({ name: 'New Product Name', image: newProductImage });
+
+      expect(product.getName()).toBe('New Product Name');
+      expect(product.getImage()).toEqual(newProductImage);
+      expect(product.getUpdatedAt()!.getTime()).toBe(currentDate);
+
+      jest.useRealTimers();
+    });
+  });
 });

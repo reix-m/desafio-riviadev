@@ -8,6 +8,7 @@ import { CreateProductEntityPayload } from '@core/domain/product/entity/type/cre
 import { Quantity } from '@core/domain/product/value-object/quantity';
 import { IsDate, IsEnum, IsInstance, IsOptional, IsString } from 'class-validator';
 import { randomUUID } from 'crypto';
+import { EditProductEntityPayload } from './type/edit-product-entity-paylaod';
 
 export class Product extends Entity<string> implements RemovableEntity {
   @IsInstance(ProductOwner)
@@ -89,6 +90,37 @@ export class Product extends Entity<string> implements RemovableEntity {
 
   public getRemovedAt(): Nullable<Date> {
     return this._removedAt;
+  }
+
+  public async edit(payload: EditProductEntityPayload): Promise<void> {
+    const currentDate: Date = new Date();
+
+    if (payload?.name) {
+      this._name = payload.name;
+      this._updatedAt = currentDate;
+    }
+
+    if (payload?.description) {
+      this._description = payload.description;
+      this._updatedAt = currentDate;
+    }
+
+    if (typeof payload?.image !== 'undefined') {
+      this._image = payload.image;
+      this._updatedAt = currentDate;
+    }
+
+    if (payload?.category) {
+      this._category = payload.category;
+      this._updatedAt = currentDate;
+    }
+
+    if (typeof payload?.quantity !== 'undefined') {
+      this._quantity = payload.quantity;
+      this._updatedAt = currentDate;
+    }
+
+    await this.validate();
   }
 
   public async remove(): Promise<void> {

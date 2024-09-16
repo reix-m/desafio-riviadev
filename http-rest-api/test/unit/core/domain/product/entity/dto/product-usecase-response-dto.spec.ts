@@ -19,7 +19,7 @@ async function createProduct(): Promise<Product> {
 }
 
 describe('ProductUseCaseResponseDto', () => {
-  describe('newFromPost', () => {
+  describe('newFromPoduct', () => {
     test('should create ProductUseCaseResponseDto with required parameters', async () => {
       const product: Product = await createProduct();
       const productUseCaseResponseDto: ProductUseCaseResponseDto = ProductUseCaseResponseDto.newFromProduct(product);
