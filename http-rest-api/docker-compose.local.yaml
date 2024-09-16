@@ -37,6 +37,9 @@ services:
       DB_PORT: '5432'
     ports:
       - '3000:3000'
+    depends_on:
+      - minio
+      - riviadev_http_api_postgresql_local
     networks:
       - riviadev_http_api_network_local
 
