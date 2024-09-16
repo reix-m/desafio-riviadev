@@ -5,6 +5,7 @@ import { MediaRepositoryPort } from '@core/domain/media/port/persistence/media-r
 import { CreateMediaService } from '@core/features/media/create-media/create-media-service';
 import { CreateMediaUseCase } from '@core/features/media/create-media/usecase/create-media-usecase';
 import { EditMediaService } from '@core/features/media/edit-media/edit-media-service';
+import { GetMediaListService } from '@core/features/media/get-media-list/get-media-list-service';
 import { GetMediaService } from '@core/features/media/get-media/get-media-service';
 import { MinioMediaFileStorageAdapter } from '@infrastructure/adapter/persistence/media-file/minion-media-file-storage-adapter';
 import { TypeOrmMediaRepositoryAdapter } from '@infrastructure/adapter/persistence/typeorm/repository/media/typeorm-media-repository-adapter';
@@ -42,6 +43,11 @@ const useCaseProviders: Provider[] = [
   {
     provide: MediaDITokens.EditMediaUseCase,
     useFactory: (mediaRepository: MediaRepositoryPort) => new EditMediaService(mediaRepository),
+    inject: [MediaDITokens.MediaRepository],
+  },
+  {
+    provide: MediaDITokens.GetMediaListUseCase,
+    useFactory: (mediaRepository: MediaRepositoryPort) => new GetMediaListService(mediaRepository),
     inject: [MediaDITokens.MediaRepository],
   },
 ];

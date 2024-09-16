@@ -6,4 +6,5 @@ export type MediaRepositoryPort = {
   findMedia(by: { id?: string }, options?: RepositoryFindOptions): Promise<Nullable<Media>>;
   addMedia(media: Media): Promise<{ id: string }>;
   updateMedia(media: Media): Promise<void>;
+  findMedias(by: { ownerId?: string }, options?: RepositoryFindOptions): Promise<Media[]>;
 };

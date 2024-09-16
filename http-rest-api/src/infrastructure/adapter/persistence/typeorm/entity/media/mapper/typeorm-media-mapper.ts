@@ -42,4 +42,8 @@ export class TypeOrmMediaMapper {
 
     return domainMedia;
   }
+
+  public static toDomainEntities(ormMedias: TypeOrmMedia[]): Media[] {
+    return ormMedias.map((ormMedia) => this.toDomainEntity(ormMedia));
+  }
 }

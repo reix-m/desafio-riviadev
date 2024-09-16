@@ -54,6 +54,27 @@ export class TypeOrmMediaRepositoryAdapter extends Repository<TypeOrmMedia> impl
     await this.update(ormMedia.id, ormMedia);
   }
 
+  public async findMedias(by: { ownerId?: string }, options: RepositoryFindOptions = {}): Promise<Media[]> {
+    const query: SelectQueryBuilder<TypeOrmMedia> = this.buildMediaQueryBuilder();
+
+    this.extendQueryWithByProperties(by, query);
+
+    if (!options.includeRemoved) {
+      query.andWhere(this.excludeRemovedMediaClause);
+    }
+    if (options?.limit) {
+      query.limit(options.limit);
+    }
+    if (options?.offset) {
+      query.offset(options.offset);
+    }
+
+    const ormMedias: TypeOrmMedia[] = await query.getMany();
+    const domainMedias: Media[] = TypeOrmMediaMapper.toDomainEntities(ormMedias);
+
+    return domainMedias;
+  }
+
   private buildMediaQueryBuilder(): SelectQueryBuilder<TypeOrmMedia> {
     return this.createQueryBuilder(this.mediaAlias).select();
   }

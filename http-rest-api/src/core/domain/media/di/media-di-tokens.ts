@@ -6,6 +6,8 @@ export class MediaDITokens {
 
   public static readonly EditMediaUseCase: unique symbol = Symbol('EditMediaUseCase');
 
+  public static readonly GetMediaListUseCase: unique symbol = Symbol('GetMediaListUseCase');
+
   // Repositories
   public static readonly MediaRepository: unique symbol = Symbol('MediaRepository');
 
