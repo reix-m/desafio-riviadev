@@ -38,4 +38,18 @@ describe('CoreAssert', () => {
       }
     });
   });
+
+  describe('isTrue', () => {
+    test('should not throw error when expression is true', () => {
+      expect(CoreAssert.isTrue(true, assertionError)).toBeUndefined();
+    });
+
+    test('should throw error when expression is false', () => {
+      try {
+        CoreAssert.isTrue(false, assertionError);
+      } catch (e) {
+        expect(e).toEqual(assertionError);
+      }
+    });
+  });
 });
