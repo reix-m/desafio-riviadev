@@ -1,8 +1,12 @@
 import { HttpAuth } from '@application/api/http-rest/auth/decorator/http-auth';
+import { HttpUser } from '@application/api/http-rest/auth/decorator/http-user';
 import { HttpRequestWithUser, HttpUserPayload } from '@application/api/http-rest/auth/type/http-auth-types';
 import { HttpRestApiModelCreateMediaBody } from '@application/api/http-rest/controller/documentation/media/http-rest-api-model-create-media-body';
 import { HttpRestApiModelCreateMediaQuery } from '@application/api/http-rest/controller/documentation/media/http-rest-api-model-create-media-query';
+import { HttpRestApiModelEditMediaBody } from '@application/api/http-rest/controller/documentation/media/http-rest-api-model-edit-media-body';
+import { HttpRestApiModelGetMediaListQuery } from '@application/api/http-rest/controller/documentation/media/http-rest-api-model-get-media-list-query';
 import { HttpRestApiResponseMedia } from '@application/api/http-rest/controller/documentation/media/http-rest-api-response-media';
+import { HttpRestApiResponseMediaList } from '@application/api/http-rest/controller/documentation/media/http-rest-api-response-media-list';
 import { CoreApiResponse } from '@core/common/api/core-api-response';
 import { Code } from '@core/common/code/code';
 import { MediaType } from '@core/common/enums/media-enums';
@@ -10,9 +14,12 @@ import { MediaDITokens } from '@core/domain/media/di/media-di-tokens';
 import { MediaUseCaseResponseDto } from '@core/domain/media/usecase/dto/media-usecase-response-dto';
 import { CreateMediaUseCase } from '@core/features/media/create-media/usecase/create-media-usecase';
 import { EditMediaUseCase } from '@core/features/media/edit-media/usecase/edit-media-usecase';
+import { GetMediaListUseCase } from '@core/features/media/get-media-list/usecase/get-media-list-usecase';
 import { GetMediaUseCase } from '@core/features/media/get-media/usecase/get-media-usecase';
 import { CreateMediaAdapter } from '@infrastructure/adapter/usecase/media/create-media-adapter';
+import { EditMediaAdapter } from '@infrastructure/adapter/usecase/media/edit-media-adapter';
 import { GetMediaAdapter } from '@infrastructure/adapter/usecase/media/get-media-adapter';
+import { GetMediaListAdapter } from '@infrastructure/adapter/usecase/media/get-media-list-adapter';
 import { FileStorageConfig } from '@infrastructure/config/file-storage-config';
 import {
   Body,
@@ -33,9 +40,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { parse } from 'path';
 import { resolve } from 'url';
-import { HttpUser } from '../auth/decorator/http-user';
-import { HttpRestApiModelEditMediaBody } from './documentation/media/http-rest-api-model-edit-media-body';
-import { EditMediaAdapter } from '@infrastructure/adapter/usecase/media/edit-media-adapter';
 
 type MulterFile = { originalname: string; mimetype: string; size: number; buffer: Buffer };
 
@@ -45,7 +49,8 @@ export class MediaController {
   constructor(
     @Inject(MediaDITokens.CreateMediaUseCase) private readonly createMediaUseCase: CreateMediaUseCase,
     @Inject(MediaDITokens.GetMediaUseCase) private readonly getMediaUseCase: GetMediaUseCase,
-    @Inject(MediaDITokens.EditMediaUseCase) private readonly editMediaUseCase: EditMediaUseCase
+    @Inject(MediaDITokens.EditMediaUseCase) private readonly editMediaUseCase: EditMediaUseCase,
+    @Inject(MediaDITokens.GetMediaListUseCase) private readonly getMediaListUseCase: GetMediaListUseCase
   ) {}
 
   @Post()
@@ -117,5 +122,25 @@ export class MediaController {
     this.setFileStorageBasePath([editedMedia]);
 
     return CoreApiResponse.success(Code.SUCCESS.code, editedMedia);
+  }
+
+  @Get()
+  @HttpAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth()
+  @ApiQuery({ type: HttpRestApiModelGetMediaListQuery })
+  @ApiResponse({ status: HttpStatus.OK, type: HttpRestApiResponseMediaList })
+  public async getMediaList(
+    @Query() query: HttpRestApiModelGetMediaListQuery
+  ): Promise<CoreApiResponse<MediaUseCaseResponseDto[]>> {
+    const adapter: GetMediaListAdapter = await GetMediaListAdapter.new({
+      executorId: query.executorId,
+      offset: Number(query.offset ?? 0),
+      limit: Number(query.limit ?? 10),
+    });
+    const medias: MediaUseCaseResponseDto[] = await this.getMediaListUseCase.execute(adapter);
+    this.setFileStorageBasePath(medias);
+
+    return CoreApiResponse.success(Code.SUCCESS.code, medias);
   }
 }
