@@ -1,5 +1,5 @@
 import { HttpAuth } from '@application/api/http-rest/auth/decorator/http-auth';
-import { HttpRequestWithUser } from '@application/api/http-rest/auth/type/http-auth-types';
+import { HttpRequestWithUser, HttpUserPayload } from '@application/api/http-rest/auth/type/http-auth-types';
 import { HttpRestApiModelCreateMediaBody } from '@application/api/http-rest/controller/documentation/media/http-rest-api-model-create-media-body';
 import { HttpRestApiModelCreateMediaQuery } from '@application/api/http-rest/controller/documentation/media/http-rest-api-model-create-media-query';
 import { HttpRestApiResponseMedia } from '@application/api/http-rest/controller/documentation/media/http-rest-api-response-media';
@@ -9,11 +9,13 @@ import { MediaType } from '@core/common/enums/media-enums';
 import { MediaDITokens } from '@core/domain/media/di/media-di-tokens';
 import { MediaUseCaseResponseDto } from '@core/domain/media/usecase/dto/media-usecase-response-dto';
 import { CreateMediaUseCase } from '@core/features/media/create-media/usecase/create-media-usecase';
+import { EditMediaUseCase } from '@core/features/media/edit-media/usecase/edit-media-usecase';
 import { GetMediaUseCase } from '@core/features/media/get-media/usecase/get-media-usecase';
 import { CreateMediaAdapter } from '@infrastructure/adapter/usecase/media/create-media-adapter';
 import { GetMediaAdapter } from '@infrastructure/adapter/usecase/media/get-media-adapter';
 import { FileStorageConfig } from '@infrastructure/config/file-storage-config';
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
@@ -21,6 +23,7 @@ import {
   Inject,
   Param,
   Post,
+  Put,
   Query,
   Req,
   UploadedFile,
@@ -30,6 +33,9 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { parse } from 'path';
 import { resolve } from 'url';
+import { HttpUser } from '../auth/decorator/http-user';
+import { HttpRestApiModelEditMediaBody } from './documentation/media/http-rest-api-model-edit-media-body';
+import { EditMediaAdapter } from '@infrastructure/adapter/usecase/media/edit-media-adapter';
 
 type MulterFile = { originalname: string; mimetype: string; size: number; buffer: Buffer };
 
@@ -38,7 +44,8 @@ type MulterFile = { originalname: string; mimetype: string; size: number; buffer
 export class MediaController {
   constructor(
     @Inject(MediaDITokens.CreateMediaUseCase) private readonly createMediaUseCase: CreateMediaUseCase,
-    @Inject(MediaDITokens.GetMediaUseCase) private readonly getMediaUseCase: GetMediaUseCase
+    @Inject(MediaDITokens.GetMediaUseCase) private readonly getMediaUseCase: GetMediaUseCase,
+    @Inject(MediaDITokens.EditMediaUseCase) private readonly editMediaUseCase: EditMediaUseCase
   ) {}
 
   @Post()
@@ -87,5 +94,28 @@ export class MediaController {
 
   private setFileStorageBasePath(medias: MediaUseCaseResponseDto[]): void {
     medias.forEach((media: MediaUseCaseResponseDto) => (media.url = resolve(FileStorageConfig.BasePath, media.url)));
+  }
+
+  @Put(':mediaId')
+  @HttpAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth()
+  @ApiBody({ type: HttpRestApiModelEditMediaBody })
+  @ApiResponse({ status: HttpStatus.OK, type: HttpRestApiResponseMedia })
+  public async editMedia(
+    @HttpUser() user: HttpUserPayload,
+    @Body() body: HttpRestApiModelEditMediaBody,
+    @Param('mediaId') mediaId: string
+  ): Promise<CoreApiResponse<MediaUseCaseResponseDto>> {
+    const adapter: EditMediaAdapter = await EditMediaAdapter.new({
+      mediaId,
+      executorId: user.id,
+      name: body.name,
+    });
+
+    const editedMedia: MediaUseCaseResponseDto = await this.editMediaUseCase.execute(adapter);
+    this.setFileStorageBasePath([editedMedia]);
+
+    return CoreApiResponse.success(Code.SUCCESS.code, editedMedia);
   }
 }

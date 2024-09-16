@@ -74,6 +74,9 @@ export class NestHttpExceptionFilter implements ExceptionFilter {
         case Code.UNAUTHORIZED_ERROR.code:
           statusCode = HttpStatus.UNAUTHORIZED;
           break;
+        case Code.ACCESS_DENIED_ERROR.code:
+          statusCode = HttpStatus.FORBIDDEN;
+          break;
         default:
           statusCode = HttpStatus.BAD_REQUEST;
           break;

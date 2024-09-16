@@ -42,7 +42,7 @@ const useCaseProviders: Provider[] = [
   {
     provide: MediaDITokens.EditMediaUseCase,
     useFactory: (mediaRepository: MediaRepositoryPort) => new EditMediaService(mediaRepository),
-    inject: [MediaDITokens.EditMediaUseCase],
+    inject: [MediaDITokens.MediaRepository],
   },
 ];
 
