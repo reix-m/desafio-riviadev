@@ -9,13 +9,17 @@ import { MediaType } from '@core/common/enums/media-enums';
 import { MediaDITokens } from '@core/domain/media/di/media-di-tokens';
 import { MediaUseCaseResponseDto } from '@core/domain/media/usecase/dto/media-usecase-response-dto';
 import { CreateMediaUseCase } from '@core/features/media/create-media/usecase/create-media-usecase';
+import { GetMediaUseCase } from '@core/features/media/get-media/usecase/get-media-usecase';
 import { CreateMediaAdapter } from '@infrastructure/adapter/usecase/media/create-media-adapter';
+import { GetMediaAdapter } from '@infrastructure/adapter/usecase/media/get-media-adapter';
 import { FileStorageConfig } from '@infrastructure/config/file-storage-config';
 import {
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Inject,
+  Param,
   Post,
   Query,
   Req,
@@ -32,7 +36,10 @@ type MulterFile = { originalname: string; mimetype: string; size: number; buffer
 @Controller('medias')
 @ApiTags('medias')
 export class MediaController {
-  constructor(@Inject(MediaDITokens.CreateMediaUseCase) private readonly createMediaUseCase: CreateMediaUseCase) {}
+  constructor(
+    @Inject(MediaDITokens.CreateMediaUseCase) private readonly createMediaUseCase: CreateMediaUseCase,
+    @Inject(MediaDITokens.GetMediaUseCase) private readonly getMediaUseCase: GetMediaUseCase
+  ) {}
 
   @Post()
   @HttpAuth()
@@ -60,6 +67,22 @@ export class MediaController {
     this.setFileStorageBasePath([createdMedia]);
 
     return CoreApiResponse.success(Code.CREATED.code, createdMedia, Code.CREATED.message);
+  }
+
+  @Get(':mediaId')
+  @HttpAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth()
+  @ApiResponse({ status: HttpStatus.OK, type: HttpRestApiResponseMedia })
+  public async getMedia(@Param('mediaId') mediaId: string): Promise<CoreApiResponse<MediaUseCaseResponseDto>> {
+    const adapter: GetMediaAdapter = await GetMediaAdapter.new({
+      mediaId: mediaId,
+    });
+
+    const media: MediaUseCaseResponseDto = await this.getMediaUseCase.execute(adapter);
+    this.setFileStorageBasePath([media]);
+
+    return CoreApiResponse.success(Code.SUCCESS.code, media);
   }
 
   private setFileStorageBasePath(medias: MediaUseCaseResponseDto[]): void {
