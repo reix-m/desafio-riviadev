@@ -7,6 +7,7 @@ import { ApiServerConfig } from '@infrastructure/config/api-server-config';
 import { FileStorageConfig } from '@infrastructure/config/file-storage-config';
 import { HttpStatus } from '@nestjs/common';
 import { TestServer } from '@test/common/test-server';
+import { TransactionalTestContext } from '@test/common/transactional-test-context';
 import { AuthExpect } from '@test/e2e/expect/auth-expect';
 import { ResponseExpect } from '@test/e2e/expect/response-expect';
 import { AuthFixture } from '@test/e2e/fixture/auth-fixture';
@@ -19,6 +20,7 @@ describe('Media.Get', () => {
   let testServer: TestServer;
   let userFixture: UserFixture;
   let mediaFixture: MediaFixture;
+  let transactionalTestContext: TransactionalTestContext;
 
   beforeAll(async () => {
     testServer = await TestServer.new();
@@ -27,12 +29,22 @@ describe('Media.Get', () => {
     mediaFixture = MediaFixture.new(testServer.testingModule);
 
     await testServer.serverApplication.init();
+
+    transactionalTestContext = TransactionalTestContext.new(testServer.dbConnection);
   });
 
   afterAll(async () => {
     if (testServer) {
       await testServer.serverApplication.close();
     }
+  });
+
+  beforeEach(async () => {
+    await transactionalTestContext.start();
+  });
+
+  afterEach(async () => {
+    await transactionalTestContext.finish();
   });
 
   describe('GET /medias/{mediaId}', () => {

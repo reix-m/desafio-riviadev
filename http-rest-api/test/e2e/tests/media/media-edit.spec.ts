@@ -10,6 +10,7 @@ import { ApiServerConfig } from '@infrastructure/config/api-server-config';
 import { FileStorageConfig } from '@infrastructure/config/file-storage-config';
 import { HttpStatus } from '@nestjs/common';
 import { TestServer } from '@test/common/test-server';
+import { TransactionalTestContext } from '@test/common/transactional-test-context';
 import { AuthExpect } from '@test/e2e/expect/auth-expect';
 import { ResponseExpect } from '@test/e2e/expect/response-expect';
 import { AuthFixture } from '@test/e2e/fixture/auth-fixture';
@@ -23,6 +24,7 @@ describe('Media.Edit', () => {
   let userFixture: UserFixture;
   let mediaFixture: MediaFixture;
   let mediaRepository: MediaRepositoryPort;
+  let transactionalTestContext: TransactionalTestContext;
 
   beforeAll(async () => {
     testServer = await TestServer.new();
@@ -33,12 +35,22 @@ describe('Media.Edit', () => {
     mediaRepository = testServer.testingModule.get(MediaDITokens.MediaRepository);
 
     await testServer.serverApplication.init();
+
+    transactionalTestContext = TransactionalTestContext.new(testServer.dbConnection);
   });
 
   afterAll(async () => {
     if (testServer) {
       await testServer.serverApplication.close();
     }
+  });
+
+  beforeEach(async () => {
+    await transactionalTestContext.start();
+  });
+
+  afterEach(async () => {
+    await transactionalTestContext.finish();
   });
 
   describe('PUT /medias/{mediaId}', () => {
