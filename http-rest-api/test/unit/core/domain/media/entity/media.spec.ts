@@ -101,4 +101,65 @@ describe('Media', () => {
       expect(media.getRemovedAt()!.getTime()).toBe(currentDate);
     });
   });
+
+  describe('edit', () => {
+    test('should not edit Media when input args are empty', async () => {
+      const media: Media = await Media.new({
+        ownerId: randomUUID(),
+        name: 'Product Image',
+        type: MediaType.Image,
+        metadata: await FileMetadata.new({ relativePath: '/relative/path' }),
+      });
+
+      await media.edit({});
+
+      const expectedMetadata: Record<string, unknown> = {
+        relativePath: '/relative/path',
+        size: null,
+        ext: null,
+        mimetype: null,
+      };
+
+      expect(media.getName()).toBe('Product Image');
+      expect(media.getMetadata().getRelativePath()).toBe(expectedMetadata.relativePath);
+      expect(media.getMetadata().getSize()).toBe(expectedMetadata.size);
+      expect(media.getMetadata().getExt()).toBe(expectedMetadata.ext);
+      expect(media.getMetadata().getMimetype()).toBe(expectedMetadata.mimetype);
+      expect(media.getUpdatedAt()).toBeNull();
+    });
+
+    test('should edit Media when input args are set', async () => {
+      jest.useFakeTimers();
+
+      const currentDate: number = Date.now();
+
+      const media: Media = await Media.new({
+        ownerId: randomUUID(),
+        name: 'Product Image',
+        type: MediaType.Image,
+        metadata: await FileMetadata.new({ relativePath: '/relative/path' }),
+      });
+
+      await media.edit({
+        name: 'New Product Image',
+        metadata: await FileMetadata.new({ relativePath: '/new/relative/path' }),
+      });
+
+      const expectedMetadata: Record<string, unknown> = {
+        relativePath: '/new/relative/path',
+        size: null,
+        ext: null,
+        mimetype: null,
+      };
+
+      expect(media.getName()).toBe('New Product Image');
+      expect(media.getMetadata().getRelativePath()).toBe(expectedMetadata.relativePath);
+      expect(media.getMetadata().getSize()).toBe(expectedMetadata.size);
+      expect(media.getMetadata().getExt()).toBe(expectedMetadata.ext);
+      expect(media.getMetadata().getMimetype()).toBe(expectedMetadata.mimetype);
+      expect(media.getUpdatedAt()!.getTime()).toBe(currentDate);
+
+      jest.useRealTimers();
+    });
+  });
 });

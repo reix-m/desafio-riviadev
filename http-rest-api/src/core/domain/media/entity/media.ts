@@ -3,6 +3,7 @@ import { RemovableEntity } from '@core/common/entity/removable-entity';
 import { MediaType } from '@core/common/enums/media-enums';
 import { Nullable } from '@core/common/type/common-types';
 import { CreateMediaEntityPayload } from '@core/domain/media/entity/type/create-media-entity-payload';
+import { EditMediaEntityPayload } from '@core/domain/media/entity/type/edit-media-entity-payload';
 import { FileMetadata } from '@core/domain/media/value-object/file-metadata';
 import { IsDate, IsEnum, IsInstance, IsOptional, IsString, IsUUID } from 'class-validator';
 import { randomUUID } from 'crypto';
@@ -18,7 +19,7 @@ export class Media extends Entity<string> implements RemovableEntity {
   private readonly _type: MediaType;
 
   @IsInstance(FileMetadata)
-  private readonly _metadata: FileMetadata;
+  private _metadata: FileMetadata;
 
   @IsDate()
   private readonly _createdAt: Date;
@@ -74,6 +75,22 @@ export class Media extends Entity<string> implements RemovableEntity {
 
   public async remove(): Promise<void> {
     this._removedAt = new Date();
+    await this.validate();
+  }
+
+  public async edit(payload: EditMediaEntityPayload): Promise<void> {
+    const currentDate: Date = new Date();
+
+    if (payload?.name) {
+      this._name = payload.name;
+      this._updatedAt = currentDate;
+    }
+
+    if (payload?.metadata) {
+      this._metadata = payload.metadata;
+      this._updatedAt = currentDate;
+    }
+
     await this.validate();
   }
 
