@@ -7,6 +7,7 @@ import { CreateProductService } from '@core/features/product/create-product/crea
 import { CreateProductUseCase } from '@core/features/product/create-product/usecase/create-product-usecase';
 import { EditProductService } from '@core/features/product/edit-product/edit-product-service';
 import { EditProductUseCase } from '@core/features/product/edit-product/usecase/edit-product-usecase';
+import { GetProductListService } from '@core/features/product/get-product-list/get-product-list-service';
 import { GetProductService } from '@core/features/product/get-product/get-product-service';
 import { RemoveProductService } from '@core/features/product/remove-product/remove-product-service';
 import { TypeOrmProductRepositoryAdapter } from '@infrastructure/adapter/persistence/typeorm/repository/product/typeorm-product-repository-adapter';
@@ -48,6 +49,11 @@ const useCaseProviders: Provider[] = [
   {
     provide: ProductDITokens.GetProductUseCase,
     useFactory: (productRepository: ProductRepositoryPort) => new GetProductService(productRepository),
+    inject: [ProductDITokens.ProductRepository],
+  },
+  {
+    provide: ProductDITokens.GetProductListUseCase,
+    useFactory: (productRepository: ProductRepositoryPort) => new GetProductListService(productRepository),
     inject: [ProductDITokens.ProductRepository],
   },
 ];
