@@ -21,7 +21,7 @@ export class Code {
 
   public static UNAUTHORIZED_ERROR: CodeDescription = {
     code: 401,
-    message: 'Unauthorized error.',
+    message: 'Unauthorized.',
   };
 
   public static INTERNAL_ERROR: CodeDescription = {
@@ -41,11 +41,16 @@ export class Code {
 
   public static ENTITY_ALREADY_EXISTS_ERROR: CodeDescription = {
     code: 1002,
-    message: 'Entity already exists error.',
+    message: 'Entity already exists.',
   };
 
   public static USE_CASE_PORT_VALIDATION_ERROR: CodeDescription = {
     code: 1003,
     message: 'Use case port validation error.',
+  };
+
+  public static ENTITY_NOT_FOUND_ERROR: CodeDescription = {
+    code: 1004,
+    message: 'Entity not found.',
   };
 }
